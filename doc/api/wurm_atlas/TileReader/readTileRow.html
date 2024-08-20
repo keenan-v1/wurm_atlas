@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the readTileRow method from the TileReader class, for the Dart programming language.">
+  <title>readTileRow method - TileReader class - wurm_atlas library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">wurm_atlas</a></li>
+    <li><a href="../../wurm_atlas/wurm_atlas-library.html">wurm_atlas.dart</a></li>
+    <li><a href="../../wurm_atlas/TileReader-class.html">TileReader</a></li>
+    <li class="self-crumb">readTileRow method</li>
+  </ol>
+  <div class="self-name">readTileRow</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="wurm_atlas&#47;TileReader-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">readTileRow</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.dart.dev/stable/3.5.0/dart-async/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../wurm_atlas/Tile-class.html">Tile</a></span>&gt;</span></span>
+<span class="name ">readTileRow</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="readTileRow-param-startY"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.5.0/dart-core/int-class.html">int</a></span> <span class="parameter-name">startY</span>, {</span></li>
+<li><span class="parameter" id="readTileRow-param-startX"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.5.0/dart-core/int-class.html">int</a></span> <span class="parameter-name">startX</span> = <span class="default-value">0</span>, </span></li>
+<li><span class="parameter" id="readTileRow-param-width"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.5.0/dart-core/int-class.html">int</a></span> <span class="parameter-name">width</span> = <span class="default-value">-1</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Read a row of tiles asynchronously</p>
+<p>Reads a row of tiles starting at the given <code>startY</code> position.
+Optionally, the <code>startX</code> position and <code>width</code> can be specified.
+If <code>width</code> is not provided then the full row is read.</p>
+<p>Returns a <a href="https://api.dart.dev/stable/3.5.0/dart-async/Stream-class.html">Stream</a> of <a href="../../wurm_atlas/Tile-class.html">Tile</a> objects.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">var reader = TileReader();
+await reader.open("assets/happy_map/top_layer.map");
+await for (var tile in reader.readTileRow(0)) {
+ print("Tile: $tile");
+}
+await reader.close();
+</code></pre>
+<p>See Also:</p>
+<ul>
+<li><a href="../../wurm_atlas/TileReader/readTileRowSync.html">readTileRowSync</a> for reading a row of tiles synchronously</li>
+<li><a href="../../wurm_atlas/TileReader/readTileSync.html">readTileSync</a> for reading a tile synchronously</li>
+<li><a href="../../wurm_atlas/TileReader/readTile.html">readTile</a> for reading a tile asynchronously</li>
+<li><a href="../../wurm_atlas/Tile-class.html">Tile</a> for the tile class</li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Stream&lt;Tile&gt; readTileRow(int startY, {int startX = 0, int width = -1}) async* {
+  _checkFileOpen(true);
+  if (width &lt; 0) {
+    width = size;
+  }
+  final position = _tilePosition(startX, startY);
+  if (position &lt; 0 || position &gt;= await _raf!.length()) {
+    throw Exception(&quot;Row position out of file bounds&quot;);
+  }
+  await _raf!.setPosition(position);
+  final data = await _raf!.read(width * _tileDataBytes);
+  for (var x = 0; x &lt; width; x++) {
+    final tileDataOffset = x * _tileDataBytes;
+    final tileData = data
+        .sublist(tileDataOffset, tileDataOffset + _tileDataBytes)
+        .buffer
+        .asByteData()
+        .getInt32(0, Endian.big);
+    var height = _tileHeight(tileData);
+    var tileInfo = TileInfoRepository().getTileInfo(_tileInfoId(tileData))!;
+    var tileX = startX + x;
+    var tileY = startY;
+    _logger.fine(&quot;Read tile pos: ($tileX, $tileY) height: $height info: $tileInfo&quot;);
+    yield Tile(tileX, tileY, height, tileInfo);
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">wurm_atlas</a></li>
+    <li><a href="../../wurm_atlas/wurm_atlas-library.html">wurm_atlas</a></li>
+    <li><a href="../../wurm_atlas/TileReader-class.html">TileReader</a></li>
+    <li class="self-crumb">readTileRow method</li>
+</ol>
+
+
+    <h5>TileReader class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    wurm_atlas
+      0.0.1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

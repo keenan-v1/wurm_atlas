@@ -1,0 +1,21 @@
+name: wurm_atlas
+description: "Wurm Atlas: A library for viewing map files"
+version: 0.0.1
+repository: https://github.com/keenan-v1/wurm_atlas
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  color: ^3.0.0
+  logging: ^1.2.0
+  yaml: ^3.1.2
+  build: ^2.3.3  
+
+dev_dependencies:
+  args: ^2.5.0
+  benchmark_harness: ^2.2.2
+  lints: ^4.0.0
+  test: ^1.24.0
+  build_runner: ^2.3.3
+  source_gen: ^1.2.3

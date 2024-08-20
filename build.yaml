@@ -1,0 +1,16 @@
+targets:
+  $default:
+    builders:
+      :tile_info_builder:
+        enabled: true
+        generate_for:
+          include:
+            - "lib/src/tile_info_repository.yaml"
+
+builders:
+  tile_info_builder:
+    import: "package:wurm_atlas/src/tile_info_builder.dart"
+    builder_factories: ["tileInfoBuilder"]
+    build_extensions: {".yaml": [".g.dart"]}
+    auto_apply: none
+    build_to: source

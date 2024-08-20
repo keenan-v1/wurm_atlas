@@ -1,0 +1,475 @@
+tiles:
+    - id: 0
+      name: Hole
+      color: '#000000'
+    - id: 1
+      name: Sand
+      color: '#a0936d'
+    - id: 2
+      name: Grass
+      color: '#366503'
+    - id: 3
+      name: Tree
+      color: '#293a02'
+    - id: 4
+      name: Rock
+      color: '#726e6b'
+    - id: 5
+      name: Dirt
+      color: '#4b3f2f'
+    - id: 6
+      name: Clay
+      color: '#717c76'
+    - id: 7
+      name: Field
+      color: '#473c2f'
+    - id: 8
+      name: Packed dirt
+      color: '#4b3f2f'
+    - id: 9
+      name: Cobblestone
+      color: '#5c5349'
+    - id: 10
+      name: Mycelium
+      color: '#470233'
+    - id: 11
+      name: Mycelium Tree
+      color: '#dd0229'
+    - id: 12
+      name: Lava
+      color: '#d7331e'
+    - id: 13
+      name: Enchanted Grass
+      color: '#2d5d2b'
+    - id: 14
+      name: Enchanted Tree
+      color: '#1a3418'
+    - id: 15
+      name: Planks
+      color: '#726650'
+    - id: 16
+      name: Stone Slabs
+      color: '#636363'
+    - id: 17
+      name: Gravel
+      color: '#4f4a40'
+    - id: 18
+      name: Peat
+      color: '#362720'
+    - id: 19
+      name: Tundra
+      color: '#76876d'
+    - id: 20
+      name: Moss
+      color: '#6a8e38'
+    - id: 21
+      name: Cliff
+      color: '#9b9794'
+    - id: 22
+      name: Steppe
+      color: '#727543'
+    - id: 23
+      name: Marsh
+      color: '#2b6548'
+    - id: 24
+      name: Tar
+      color: '#121528'
+    - id: 25
+      name: Mine Door Wood
+      color: '#293a02'
+    - id: 26
+      name: Mine Door Stone
+      color: '#726e6b'
+    - id: 27
+      name: Mine Door Gold
+      color: '#1a3418'
+    - id: 28
+      name: Mine Door Silver
+      color: '#362720'
+    - id: 29
+      name: Mine Door Steel
+      color: '#2b6548'
+    - id: 30
+      name: Snow
+      color: '#ffffff'
+    - id: 31
+      name: Bush
+      color: '#293a02'
+    - id: 32
+      name: Kelp
+      color: '#366503'
+    - id: 33
+      name: Reed
+      color: '#366503'
+    - id: 34
+      name: Enchanted Bush
+      color: '#1a3418'
+    - id: 35
+      name: Mycelium Bush
+      color: '#dd0229'
+    - id: 36
+      name: Slate Bricks
+      color: '#5c5349'
+    - id: 37
+      name: Marble Slabs
+      color: '#636363'
+    - id: 38
+      name: Lawn
+      color: '#366503'
+    - id: 39
+      name: Planks Tarred
+      color: '#726650'
+    - id: 40
+      name: Mycelium Lawn
+      color: '#470233'
+    - id: 41
+      name: Cobblestone Rough
+      color: '#5c5349'
+    - id: 42
+      name: Cobblestone Round
+      color: '#5c5349'
+    - id: 43
+      name: Field 2
+      color: '#473c2f'
+    - id: 44
+      name: Sandstone Bricks
+      color: '#5c5349'
+    - id: 45
+      name: Sandstone Slabs
+      color: '#5c5349'
+    - id: 46
+      name: Slate Slabs
+      color: '#636363'
+    - id: 47
+      name: Marble Bricks
+      color: '#5c5349'
+    - id: 48
+      name: Pottery Bricks
+      color: '#5c5349'
+    - id: 49
+      name: Prepared Bridge
+      color: '#636363'
+    - id: 100
+      name: Tree Birch
+      color: '#293a02'
+    - id: 101
+      name: Tree Pine
+      color: '#293a02'
+    - id: 102
+      name: Tree Oak
+      color: '#293a02'
+    - id: 103
+      name: Tree Cedar
+      color: '#293a02'
+    - id: 104
+      name: Tree Willow
+      color: '#293a02'
+    - id: 105
+      name: Tree Maple
+      color: '#293a02'
+    - id: 106
+      name: Tree Apple
+      color: '#293a02'
+    - id: 107
+      name: Tree Lemon
+      color: '#293a02'
+    - id: 108
+      name: Tree Olive
+      color: '#293a02'
+    - id: 109
+      name: Tree Cherry
+      color: '#293a02'
+    - id: 110
+      name: Tree Chestnut
+      color: '#293a02'
+    - id: 111
+      name: Tree Walnut
+      color: '#293a02'
+    - id: 112
+      name: Tree Fir
+      color: '#293a02'
+    - id: 113
+      name: Tree Linden
+      color: '#293a02'
+    - id: 114
+      name: Tree Mycelium Birch
+      color: '#dd0229'
+    - id: 115
+      name: Tree Mycelium Pine
+      color: '#dd0229'
+    - id: 116
+      name: Tree Mycelium Oak
+      color: '#dd0229'
+    - id: 117
+      name: Tree Mycelium Cedar
+      color: '#dd0229'
+    - id: 118
+      name: Tree Mycelium Willow
+      color: '#dd0229'
+    - id: 119
+      name: Tree Mycelium Maple
+      color: '#dd0229'
+    - id: 120
+      name: Tree Mycelium Apple
+      color: '#dd0229'
+    - id: 121
+      name: Tree Mycelium Lemon
+      color: '#dd0229'
+    - id: 122
+      name: Tree Mycelium Olive
+      color: '#dd0229'
+    - id: 123
+      name: Tree Mycelium Cherry
+      color: '#dd0229'
+    - id: 124
+      name: Tree Mycelium Chestnut
+      color: '#dd0229'
+    - id: 125
+      name: Tree Mycelium Walnut
+      color: '#dd0229'
+    - id: 126
+      name: Tree Mycelium Fir
+      color: '#dd0229'
+    - id: 127
+      name: Tree Mycelium Linden
+      color: '#dd0229'
+    - id: 128
+      name: Tree Enchanted Birch
+      color: '#1a3418'
+    - id: 129
+      name: Tree Enchanted Pine
+      color: '#1a3418'
+    - id: 130
+      name: Tree Enchanted Oak
+      color: '#1a3418'
+    - id: 131
+      name: Tree Enchanted Cedar
+      color: '#1a3418'
+    - id: 132
+      name: Tree Enchanted Willow
+      color: '#1a3418'
+    - id: 133
+      name: Tree Enchanted Maple
+      color: '#1a3418'
+    - id: 134
+      name: Tree Enchanted Apple
+      color: '#1a3418'
+    - id: 135
+      name: Tree Enchanted Lemon
+      color: '#1a3418'
+    - id: 136
+      name: Tree Enchanted Olive
+      color: '#1a3418'
+    - id: 137
+      name: Tree Enchanted Cherry
+      color: '#1a3418'
+    - id: 138
+      name: Tree Enchanted Chestnut
+      color: '#1a3418'
+    - id: 139
+      name: Tree Enchanted Walnut
+      color: '#1a3418'
+    - id: 140
+      name: Tree Enchanted Fir
+      color: '#1a3418'
+    - id: 141
+      name: Tree Enchanted Linden
+      color: '#1a3418'
+    - id: 142
+      name: Bush Lavender
+      color: '#e6e6fa'
+    - id: 143
+      name: Bush Rose
+      color: '#ff007f'
+    - id: 144
+      name: Bush Thorn
+      color: '#8b0000'
+    - id: 145
+      name: Bush Grape
+      color: '#6f2da8'
+    - id: 146
+      name: Bush Camellia
+      color: '#ffb7c5'
+    - id: 147
+      name: Bush Oleander
+      color: '#ff6f61'
+    - id: 148
+      name: Bush Mycelium Lavender
+      color: '#dd0229'
+    - id: 149
+      name: Bush Mycelium Rose
+      color: '#dd0229'
+    - id: 150
+      name: Bush Mycelium Thorn
+      color: '#dd0229'
+    - id: 151
+      name: Bush Mycelium Grape
+      color: '#dd0229'
+    - id: 152
+      name: Bush Mycelium Camellia
+      color: '#dd0229'
+    - id: 153
+      name: Bush Mycelium Oleander
+      color: '#dd0229'
+    - id: 154
+      name: Bush Enchanted Lavender
+      color: '#1a3418'
+    - id: 155
+      name: Bush Enchanted Rose
+      color: '#1a3418'
+    - id: 156
+      name: Bush Enchanted Thorn
+      color: '#1a3418'
+    - id: 157
+      name: Bush Enchanted Grape
+      color: '#1a3418'
+    - id: 158
+      name: Bush Enchanted Camellia
+      color: '#1a3418'
+    - id: 159
+      name: Bush Enchanted Oleander
+      color: '#1a3418'
+    - id: 160
+      name: Bush Hazelnut
+      color: '#8e7618'
+    - id: 161
+      name: Bush Mycelium Hazelnut
+      color: '#dd0229'
+    - id: 162
+      name: Bush Enchanted Hazelnut
+      color: '#1a3418'
+    - id: 163
+      name: Tree Orange
+      color: '#ffa500'
+    - id: 164
+      name: Tree Mycelium Orange
+      color: '#dd0229'
+    - id: 165
+      name: Tree Enchanted Orange
+      color: '#1a3418'
+    - id: 166
+      name: Bush Raspberry
+      color: '#e30b5d'
+    - id: 167
+      name: Bush Mycelium Raspberry
+      color: '#dd0229'
+    - id: 168
+      name: Bush Enchanted Raspberry
+      color: '#1a3418'
+    - id: 169
+      name: Bush Blueberry
+      color: '#4f86f7'
+    - id: 170
+      name: Bush Mycelium Blueberry
+      color: '#dd0229'
+    - id: 171
+      name: Bush Enchanted Blueberry
+      color: '#1a3418'
+    - id: 172
+      name: Bush Lingonberry
+      color: '#b22222'
+    - id: 200
+      name: Cave
+      color: '#4b4b4b'
+    - id: 201
+      name: Cave Exit
+      color: '#4b4b4b'
+    - id: 202
+      name: Cave Wall
+      color: '#4b4b4b'
+    - id: 203
+      name: Cave Wall Reinforced
+      color: '#4b4b4b'
+    - id: 204
+      name: Cave Wall Lava
+      color: '#d7331e'
+    - id: 205
+      name: Cave Wall Slate
+      color: '#2f4f4f'
+    - id: 206
+      name: Cave Wall Marble
+      color: '#ffffff'
+    - id: 207
+      name: Cave Floor Reinforced
+      color: '#4b4b4b'
+    - id: 220
+      name: Cave Wall Ore Gold
+      color: '#ffd700'
+    - id: 221
+      name: Cave Wall Ore Silver
+      color: '#c0c0c0'
+    - id: 222
+      name: Cave Wall Ore Iron
+      color: '#b7410e'
+    - id: 223
+      name: Cave Wall Ore Copper
+      color: '#b87333'
+    - id: 224
+      name: Cave Wall Ore Lead
+      color: '#6e6e6e'
+    - id: 225
+      name: Cave Wall Ore Zinc
+      color: '#7f7f7f'
+    - id: 226
+      name: Cave Wall Ore Tin
+      color: '#d2b48c'
+    - id: 227
+      name: Cave Wall Ore Adamantine
+      color: '#00ff00'
+    - id: 228
+      name: Cave Wall Ore Glimmersteel
+      color: '#ffd700'
+    - id: 229
+      name: Cave Wall Rocksalt
+      color: '#f5f5dc'
+    - id: 230
+      name: Cave Wall Sandstone
+      color: '#d2b48c'
+    - id: 231
+      name: Cave Wall Stone Reinforced
+      color: '#4b4b4b'
+    - id: 232
+      name: Cave Wall Slate Reinforced
+      color: '#2f4f4f'
+    - id: 233
+      name: Cave Wall Pottery Reinforced
+      color: '#b87333'
+    - id: 234
+      name: Cave Wall Rounded Stone Reinforced
+      color: '#4b4b4b'
+    - id: 235
+      name: Cave Wall Sandstone Reinforced
+      color: '#d2b48c'
+    - id: 236
+      name: Cave Wall Rendered Reinforced
+      color: '#4b4b4b'
+    - id: 237
+      name: Cave Wall Marble Reinforced
+      color: '#ffffff'
+    - id: 238
+      name: Cave Wall Wood Reinforced
+      color: '#8b4513'
+    - id: 239
+      name: Cave Wall Part Stone Reinforced
+      color: '#4b4b4b'
+    - id: 240
+      name: Cave Wall Part Slate Reinforced
+      color: '#2f4f4f'
+    - id: 241
+      name: Cave Wall Part Pottery Reinforced
+      color: '#b87333'
+    - id: 242
+      name: Cave Wall Part Rounded Stone Reinforced
+      color: '#4b4b4b'
+    - id: 243
+      name: Cave Wall Part Sandstone Reinforced
+      color: '#d2b48c'
+    - id: 244
+      name: Cave Wall Part Marble Reinforced
+      color: '#ffffff'
+    - id: 245
+      name: Cave Wall Part Wood Reinforced
+      color: '#8b4513'
+    - id: 246
+      name: Cave Prepared Floor Reinforced
+      color: '#4b4b4b'
