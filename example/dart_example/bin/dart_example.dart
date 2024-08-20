@@ -47,7 +47,8 @@ void printUsage(ArgParser argParser) {
   print(argParser.usage);
 }
 
-void dumpMap(LayerType layerType, String mapPath, String outputFileName, bool showWater) {
+void dumpMap(LayerType layerType, String mapPath, String outputFileName,
+    bool showWater) {
   print('Dumping ${layerType.name} map $mapPath to $outputFileName');
   var layer = Layer(layerType, mapPath)
     ..openSync()

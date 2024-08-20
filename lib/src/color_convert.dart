@@ -1,17 +1,17 @@
 import 'package:color/color.dart';
 
 /// Extension methods for converting colors from various formats.
-/// 
+///
 /// This extension adds methods to the [Color] class.
-/// 
+///
 extension ColorConvert on Color {
   /// Creates a color from [colorString].
-  /// 
+  ///
   /// Throws [FormatException] if the string is not a supported color string.
   /// Supported formats are:
   /// - RGB string: "rgb(0,255,0)"
   /// - Hex string: "#00ff00", "00ff00", "#0f0", "0f0"
-  /// 
+  ///
   /// ```dart
   /// ColorConvert.from("rgb(0,255,0)") == Color.rgb(0, 255, 0)
   /// ColorConvert.from("#00ff00") == Color.hex("#00ff00")
@@ -29,9 +29,9 @@ extension ColorConvert on Color {
   }
 
   /// Creates a color from an RGB string provided by [rgbString].
-  /// 
+  ///
   /// Throws [FormatException] if the string is not a valid RGB string.
-  /// 
+  ///
   /// ```dart
   /// ColorConvert.fromRGB("rgb(0,255,0)") == Color.rgb(0, 255, 0)
   /// ```
@@ -48,9 +48,9 @@ extension ColorConvert on Color {
   }
 
   /// Creates a color from a hex string provided by [hexString].
-  /// 
+  ///
   /// Throws [FormatException] if the string is not a valid hex string.
-  /// 
+  ///
   /// ```dart
   /// ColorConvert.fromHex("#00ff00") == Color.hex("#00ff00")
   /// ```
@@ -70,9 +70,9 @@ extension ColorConvert on Color {
   }
 
   /// Converts a color to an integer.
-  /// 
+  ///
   /// The integer is in the format 0xAARRGGBB.
-  /// 
+  ///
   /// ```dart
   /// Color.hex("#00ff00").toInt() == 0xff00ff00
   /// ```

@@ -5,10 +5,10 @@ import 'package:yaml/yaml.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
 
 /// Builder for generating the tile info repository from the `tile_info_repository.yaml` file
-/// 
+///
 /// To regenerate `tile_info_repository.g.dart`, modify the `tile_info_repository.yaml` file
 /// and run `[dart|flutter] pub run build_runner build`
-/// 
+///
 /// The `tile_info_repository.yaml` file should have the following format:
 /// ```yaml
 /// tiles:
@@ -16,9 +16,9 @@ import 'package:wurm_atlas/wurm_atlas.dart';
 ///    name: "Rock"
 ///    color: "#808080"
 /// ```
-/// 
+///
 /// The `id` is the tile id, `name` is the name of the tile, and `color` is the color of the tile in hex or rgb(r,g,b) format.
-/// 
+///
 /// See Also:
 /// - [TileInfo] for the tile info class
 /// - [TileInfoRepository] for the tile info repository class

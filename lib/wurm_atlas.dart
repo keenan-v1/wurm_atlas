@@ -1,8 +1,8 @@
 /// Wurm Atlas is a Dart library for reading and manipulating Wurm Unlimited maps.
-/// 
+///
 /// The library is designed to be used with the Wurm Unlimited map dumps, which are
 /// in a custom binary format.
-/// 
+///
 /// The library provides the following classes:
 /// - [TileInfo] for the tile info class
 /// - [ColorConvert] for the color conversion class
@@ -12,7 +12,7 @@
 /// - [Layer] for the layer class
 /// - [LayerType] for the layer type enum
 /// - [ValidationException] for the validation exception class
-/// 
+///
 library;
 
 import 'package:wurm_atlas/src/tile_info.dart';

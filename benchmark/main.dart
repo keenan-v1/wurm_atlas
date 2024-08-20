@@ -3,7 +3,6 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
 
 class ReadTileBenchmark extends BenchmarkBase {
-
   ReadTileBenchmark() : super('ReadTile');
 
   Layer layer = Layer(LayerType.top, 'assets/happy_map');

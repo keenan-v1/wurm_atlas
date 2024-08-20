@@ -122,7 +122,7 @@ void main() async {
       expect(() => tileReader.readTile(0, 0), throwsException);
     });
 
-    test('test reading tile rows', ()  async {
+    test('test reading tile rows', () async {
       await tileReader.open("assets/happy_map/top_layer.map");
       List<Tile> tiles = await tileReader.readTileRow(0, width: 2).toList();
       expect(tiles.length, 2);

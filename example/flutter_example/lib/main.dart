@@ -98,8 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (event is PointerScrollEvent) {
                   final scale = (_viewController.scale ?? 0) *
                       (1.0 - event.scrollDelta.dy / 1000.0);
-                  final position = _viewController.position * (1.0 - event.scrollDelta.dy / 1000.0);
-                  _viewController.updateMultiple(position: position, scale: scale);
+                  final position = _viewController.position *
+                      (1.0 - event.scrollDelta.dy / 1000.0);
+                  _viewController.updateMultiple(
+                      position: position, scale: scale);
                 }
               },
               child: PhotoView(
