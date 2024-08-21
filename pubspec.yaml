@@ -1,6 +1,8 @@
 name: wurm_atlas
-description: "Wurm Atlas: A library for viewing map files"
-version: 0.0.1
+description: |
+  Wurm Atlas is a library that can open and parse Wurm Unlimited map files, allowing
+  you to read tile information and export as images.
+version: 0.0.2
 repository: https://github.com/keenan-v1/wurm_atlas
 
 environment:
