@@ -35,7 +35,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: example/flutter_example/pubspec.yaml
       - name: Change directory to example/flutter_example
         run: cd example/flutter_example
       - name: Install dependencies
