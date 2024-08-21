@@ -119,7 +119,8 @@ reader.closeSync();
     var tileInfo = TileInfoRepository().getTileInfo(_tileInfoId(tileData))!;
     var tileX = startX + x;
     var tileY = startY;
-    _logger.fine(&quot;Read tile pos: ($tileX, $tileY) height: $height info: $tileInfo&quot;);
+    _logger.fine(
+        &quot;Read tile pos: ($tileX, $tileY) height: $height info: $tileInfo&quot;);
     return Tile(tileX, tileY, height, tileInfo);
   });
 }</code></pre>
@@ -156,7 +157,7 @@ reader.closeSync();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   

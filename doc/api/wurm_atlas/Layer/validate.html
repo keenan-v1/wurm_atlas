@@ -94,13 +94,13 @@ await layer.close();
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;bool&gt; validate() async {
-  if (reader.magicNumber != type.magicNumber) {
+  if (_reader.magicNumber != type.magicNumber) {
     throw ValidationException(
-        &quot;Magic number mismatch. Expected: ${type.magicNumber}, got: ${reader.magicNumber}&quot;);
+        &quot;Magic number mismatch. Expected: ${type.magicNumber}, got: ${_reader.magicNumber}&quot;);
   }
-  if (reader.version != type.version) {
+  if (_reader.version != type.version) {
     throw ValidationException(
-        &quot;Version mismatch. Expected: ${type.version}, got: ${reader.version}&quot;);
+        &quot;Version mismatch. Expected: ${type.version}, got: ${_reader.version}&quot;);
   }
   return true;
 }</code></pre>
@@ -137,7 +137,7 @@ await layer.close();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   

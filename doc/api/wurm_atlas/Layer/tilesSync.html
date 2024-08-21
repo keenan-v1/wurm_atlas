@@ -100,7 +100,7 @@ layer.closeSync();
   validateSync();
   var tiles = &lt;Tile&gt;[];
   for (var h = y; h &lt; y + height; h++) {
-    tiles.addAll(reader.readTileRowSync(h, startX: x, width: width));
+    tiles.addAll(_reader.readTileRowSync(h, startX: x, width: width));
   }
   return tiles;
 }</code></pre>
@@ -137,7 +137,7 @@ layer.closeSync();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   

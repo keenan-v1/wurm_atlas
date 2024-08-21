@@ -96,7 +96,7 @@ await layer.close();
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;Tile&gt; tile(int x, int y) async {
   await validate();
-  return await reader.readTile(x, y);
+  return await _reader.readTile(x, y);
 }</code></pre>
 </section>
 
@@ -131,7 +131,7 @@ await layer.close();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   

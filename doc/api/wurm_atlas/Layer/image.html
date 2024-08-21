@@ -106,7 +106,7 @@ await layer.close();
   var count = 0;
   var total = width * height;
   for (var y = 0; y &lt; height; y++) {
-    await reader.readTileRow(y, startX: x, width: width).forEach((tile) {
+    await _reader.readTileRow(y, startX: x, width: width).forEach((tile) {
       var offset = (y * width + tile.x) * 4;
       image.asByteData().setInt32(
           offset, tile.color(showWater: showWater).toInt(), Endian.little);
@@ -149,7 +149,7 @@ await layer.close();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   

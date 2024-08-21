@@ -99,7 +99,7 @@ await layer.close();
   <pre class="language-dart"><code class="language-dart">Stream&lt;Tile&gt; tiles(int x, int y, int width, int height) async* {
   await validate();
   for (var h = y; h &lt; y + height; h++) {
-    yield* reader.readTileRow(h, startX: x, width: width);
+    yield* _reader.readTileRow(h, startX: x, width: width);
   }
 }</code></pre>
 </section>
@@ -135,7 +135,7 @@ await layer.close();
 <footer>
   <span class="no-break">
     wurm_atlas
-      0.0.1
+      0.0.2
   </span>
 
   
