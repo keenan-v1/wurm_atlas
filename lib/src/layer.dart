@@ -28,10 +28,14 @@ typedef ProgressCallback = void Function(int count, int total);
 /// - [TileReader], the class for reading tiles from a layer file.
 /// - [ValidationException], the exception thrown when validation fails.
 class Layer {
+  final BigInt _magicNumber = BigInt.parse("0x474A2198B2781B9D");
+
   /// The [LayerType] of the layer, e.g. [LayerType.top].
   final LayerType type;
+
   /// The path to the map folder.
   final String mapFolder;
+
   /// The [TileReader] for reading tiles from the layer file.
   final TileReader _reader = TileReader();
 
@@ -154,9 +158,9 @@ class Layer {
   /// - [open], the asynchronous version of the method for opening the layer file.
   ///
   bool validateSync() {
-    if (_reader.magicNumber != type.magicNumber) {
+    if (_reader.magicNumber != _magicNumber) {
       throw ValidationException(
-          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${_reader.magicNumber}");
+          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
     }
     if (_reader.version != type.version) {
       throw ValidationException(
@@ -185,9 +189,9 @@ class Layer {
   /// - [openSync], the synchronous version of the method for opening the layer file.
   ///
   Future<bool> validate() async {
-    if (_reader.magicNumber != type.magicNumber) {
+    if (_reader.magicNumber != _magicNumber) {
       throw ValidationException(
-          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${_reader.magicNumber}");
+          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
     }
     if (_reader.version != type.version) {
       throw ValidationException(

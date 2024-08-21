@@ -31,7 +31,7 @@ class TileReader {
   RandomAccessFile? _raf;
   int? _size;
   int? _version;
-  int? _magicNumber;
+  BigInt? _magicNumber;
 
   T _checkFileOpen<T>(T? value) {
     if (_raf == null || value == null) {
@@ -47,7 +47,7 @@ class TileReader {
   int get version => _checkFileOpen(_version);
 
   /// The magic number of the map
-  int get magicNumber => _checkFileOpen(_magicNumber);
+  BigInt get magicNumber => _checkFileOpen(_magicNumber);
 
   /// Open a map file synchronously
   ///
@@ -71,10 +71,12 @@ class TileReader {
     _raf?.closeSync();
     _raf = File(layerFilePath).openSync();
     _raf!.setPositionSync(0);
-    _magicNumber = Uint8List.fromList(_raf!.readSync(8))
-        .buffer
-        .asByteData()
-        .getInt64(0, Endian.big);
+    _magicNumber = BigInt.from(
+      Uint8List.fromList(_raf!.readSync(8))
+          .buffer
+          .asByteData()
+          .getInt64(0, Endian.big),
+    );
     _raf!.setPositionSync(8);
     _version = _raf!.readByteSync();
     _raf!.setPositionSync(9);
@@ -103,10 +105,12 @@ class TileReader {
     await _raf?.close();
     _raf = await File(layerFilePath).open();
     await _raf!.setPosition(0);
-    _magicNumber = Uint8List.fromList(await _raf!.read(8))
-        .buffer
-        .asByteData()
-        .getInt64(0, Endian.big);
+    _magicNumber = BigInt.from(
+      Uint8List.fromList(await _raf!.read(8))
+          .buffer
+          .asByteData()
+          .getInt64(0, Endian.big),
+    );
     await _raf!.setPosition(8);
     _version = (await _raf!.read(1)).first;
     await _raf!.setPosition(9);

@@ -13,7 +13,6 @@ void main() async {
       tileReader.openSync("assets/happy_map/top_layer.map");
       expect(tileReader.size, 256);
       expect(tileReader.version, LayerType.top.version);
-      expect(tileReader.magicNumber, LayerType.top.magicNumber);
     });
 
     test('test accessing properties of unopened file', () {
@@ -82,7 +81,6 @@ void main() async {
       await tileReader.open("assets/happy_map/top_layer.map");
       expect(tileReader.size, 256);
       expect(tileReader.version, LayerType.top.version);
-      expect(tileReader.magicNumber, LayerType.top.magicNumber);
     });
 
     test('test accessing properties of unopened file', () async {

@@ -13,32 +13,25 @@
 /// - [Layer], the base class for all layers in the map.
 enum LayerType {
   /// The top layer of the map.
-  top(fileName: "top_layer.map", magicNumber: 0x474A2198B2781B9D, version: 0),
+  top(fileName: "top_layer.map", version: 0),
 
   /// The rock layer of the map.
-  rock(fileName: "rock_layer.map", magicNumber: 0x474A2198B2781B9D, version: 0),
+  rock(fileName: "rock_layer.map", version: 0),
 
   /// The resources layer of the map.
-  resources(
-      fileName: "resources.map", magicNumber: 0x474A2198B2781B9D, version: 0),
+  resources(fileName: "resources.map", version: 0),
 
   /// The cave layer of the map.
-  cave(fileName: "map_cave.map", magicNumber: 0x474A2198B2781B9D, version: 0),
+  cave(fileName: "map_cave.map", version: 0),
 
   /// The flags layer of the map.
-  flags(fileName: "flags.map", magicNumber: 0x474A2198B2781B9D, version: 0);
+  flags(fileName: "flags.map", version: 0);
 
   /// The name of the file that contains the layer.
   final String fileName;
 
-  /// The magic number that identifies the layer.
-  final int magicNumber;
-
   /// The version of the layer.
   final int version;
 
-  const LayerType(
-      {required this.fileName,
-      required this.magicNumber,
-      required this.version});
+  const LayerType({required this.fileName, required this.version});
 }
