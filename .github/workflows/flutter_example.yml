@@ -31,13 +31,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: example/flutter_example/pubspec.yaml
+      - name: Change directory to example/flutter_example
+        run: cd example/flutter_example
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build web
+        run: flutter build web 
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: 'doc/api'
+          path: 'example/flutter_example/build/web'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
