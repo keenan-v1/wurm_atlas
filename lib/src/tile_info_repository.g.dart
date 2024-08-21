@@ -1,5 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// To update, run `[flutter|dart] run build_runner build`
+// To update, first modify the tile_info_repository.yaml file
+// next, run `[flutter|dart] run build_runner build`
 
 part of 'package:wurm_atlas/src/tile_info_repository.dart';
 

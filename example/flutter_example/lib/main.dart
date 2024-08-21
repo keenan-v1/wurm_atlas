@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:logging/logging.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +38,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static final Logger _logger = Logger("MyHomePage");
   Image? image;
   bool isLoading = false;
   int count = 0;
@@ -51,8 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _openMap() async => FilePicker.platform
-          .pickFiles(allowedExtensions: ['map']).then((result) async {
+  void _openMap() async => FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ["map"]).then((result) async {
         setState(() {
           isLoading = true;
           image = null;
@@ -60,9 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
         var selectedFile = result!.files.first;
         var layerType =
             LayerType.values.firstWhere((t) => t.fileName == selectedFile.name);
+        _logger.info("Opening map: ${selectedFile}");
         var mapFolder = selectedFile.path!.substring(
             0, selectedFile.path!.lastIndexOf(Platform.pathSeparator));
-        var layer = Layer(layerType, mapFolder);
+        var layer = Layer.file(layerType, mapFolder);
         await layer.open();
 
         var newImage = Image.memory(

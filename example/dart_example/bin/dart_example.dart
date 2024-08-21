@@ -50,7 +50,7 @@ void printUsage(ArgParser argParser) {
 void dumpMap(LayerType layerType, String mapPath, String outputFileName,
     bool showWater) {
   print('Dumping ${layerType.name} map $mapPath to $outputFileName');
-  var layer = Layer(layerType, mapPath)
+  var layer = Layer.file(layerType, mapPath)
     ..openSync()
     ..validateSync();
   print("Map size: ${layer.size}");

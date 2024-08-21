@@ -1,9 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:logging/logging.dart';
 import 'package:wurm_atlas/src/color_convert.dart';
+import 'package:wurm_atlas/src/file_tile_reader.dart';
 import 'package:wurm_atlas/src/layer_type.dart';
+import 'package:wurm_atlas/src/memory_tile_reader.dart';
 import 'package:wurm_atlas/src/tile.dart';
-import 'package:wurm_atlas/src/tile_reader.dart';
+import 'package:wurm_atlas/src/base_tile_reader.dart';
 import 'package:wurm_atlas/src/validation_exception.dart';
 
 /// Function signature for the progress callback.
@@ -25,9 +28,10 @@ typedef ProgressCallback = void Function(int count, int total);
 /// See also:
 /// - [LayerType], the type of the layer.
 /// - [Tile], the class representing a tile in the map.
-/// - [TileReader], the class for reading tiles from a layer file.
+/// - [BaseTileReader], the class for reading tiles from a layer file.
 /// - [ValidationException], the exception thrown when validation fails.
 class Layer {
+  static final Logger _logger = Logger('Layer');
   final BigInt _magicNumber = BigInt.parse("0x474A2198B2781B9D");
 
   /// The [LayerType] of the layer, e.g. [LayerType.top].
@@ -36,8 +40,8 @@ class Layer {
   /// The path to the map folder.
   final String mapFolder;
 
-  /// The [TileReader] for reading tiles from the layer file.
-  final TileReader _reader = TileReader();
+  /// The [BaseTileReader] for reading tiles from the layer file.
+  final BaseTileReader _reader;
 
   /// The size of the layer in bytes.
   int get size => _reader.size;
@@ -46,7 +50,12 @@ class Layer {
   String get layerFilePath => "$mapFolder/${type.fileName}";
 
   /// Creates a new layer with the given [type] and [mapFolder].
-  Layer(this.type, this.mapFolder);
+  Layer.file(this.type, this.mapFolder) : _reader = FileTileReader();
+
+  /// Creates a new layer with the given [type] and a stream of bytes.
+  Layer.memory(this.type, Uint8List bytes)
+      : mapFolder = "",
+        _reader = MemoryTileReader(bytes);
 
   /// Opens the layer file synchronously.
   ///
@@ -159,10 +168,14 @@ class Layer {
   ///
   bool validateSync() {
     if (_reader.magicNumber != _magicNumber) {
+      _logger.severe(
+          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
       throw ValidationException(
           "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
     }
     if (_reader.version != type.version) {
+      _logger.severe(
+          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
       throw ValidationException(
           "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
     }

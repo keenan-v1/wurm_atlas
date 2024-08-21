@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
@@ -19,13 +20,13 @@ void main() async {
     });
 
     test('test validateSync on valid map file', () {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
       expect(layer?.validateSync(), true);
     });
 
     test('test validateSync throwing an exception on a bad magic number', () {
-      layer = Layer(LayerType.top, "assets/bad_magic_number_map");
+      layer = Layer.file(LayerType.top, "assets/bad_magic_number_map");
       layer?.openSync();
       expect(() {
         layer?.validateSync();
@@ -36,7 +37,7 @@ void main() async {
     });
 
     test('test validateSync throwing an exception on a bad version', () {
-      layer = Layer(LayerType.top, "assets/bad_version_map");
+      layer = Layer.file(LayerType.top, "assets/bad_version_map");
       layer?.openSync();
       expect(
           () => layer?.validateSync(),
@@ -46,7 +47,7 @@ void main() async {
     });
 
     test('test tilesSync', () {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
       var tiles = layer?.tilesSync(0, 0, 1, 1) ?? [];
       expect(tiles.length, 1);
@@ -56,7 +57,7 @@ void main() async {
     });
 
     test('test tilesSync with multiple tiles', () {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
       var tiles = layer?.tilesSync(0, 0, 2, 2) ?? [];
       expect(tiles.length, 4);
@@ -75,7 +76,7 @@ void main() async {
     });
 
     test('test tilesSync with a bad magic number', () {
-      layer = Layer(LayerType.top, "assets/bad_magic_number_map");
+      layer = Layer.file(LayerType.top, "assets/bad_magic_number_map");
       layer?.openSync();
       expect(
           () => layer?.tilesSync(0, 0, 1, 1),
@@ -85,7 +86,7 @@ void main() async {
     });
 
     test('test tilesSync with a bad version', () {
-      layer = Layer(LayerType.top, "assets/bad_version_map");
+      layer = Layer.file(LayerType.top, "assets/bad_version_map");
       layer?.openSync();
       expect(
           () => layer?.tilesSync(0, 0, 1, 1),
@@ -95,7 +96,7 @@ void main() async {
     });
 
     test('test tileSync', () {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
       var tile = layer?.tileSync(0, 0) ?? emptyTile;
       expect(tile.x, 0);
@@ -104,7 +105,7 @@ void main() async {
     });
 
     test('test imageSync', () {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
       var image = layer?.imageSync(0, 0, 256, 256);
       expect(image, isNotNull);
@@ -132,13 +133,13 @@ void main() async {
     });
 
     test('test validate on valid map file', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       expect(await layer?.validate(), true);
     });
 
     test('test validate throwing an exception on a bad magic number', () async {
-      layer = Layer(LayerType.top, "assets/bad_magic_number_map");
+      layer = Layer.file(LayerType.top, "assets/bad_magic_number_map");
       await layer?.open();
       expect(
           () => layer?.validate(),
@@ -148,7 +149,7 @@ void main() async {
     });
 
     test('test validate throwing an exception on a bad version', () async {
-      layer = Layer(LayerType.top, "assets/bad_version_map");
+      layer = Layer.file(LayerType.top, "assets/bad_version_map");
       await layer?.open();
       expect(
           () => layer?.validate(),
@@ -158,7 +159,7 @@ void main() async {
     });
 
     test('test tiles', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       await layer?.tiles(0, 0, 1, 1).forEach((tile) {
         expect(tile.x, 0);
@@ -168,7 +169,7 @@ void main() async {
     });
 
     test('test tiles with multiple tiles', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       var tileStream = layer?.tiles(0, 0, 2, 2);
       var count = 0;
@@ -180,13 +181,13 @@ void main() async {
     });
 
     test('test tiles outside of bounds', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       expect(() => layer?.tiles(256, 256, 1, 1).first, throwsException);
     });
 
     test('test tile', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       var tile = await layer?.tile(0, 0) ?? emptyTile;
       expect(tile.x, 0);
@@ -195,13 +196,13 @@ void main() async {
     });
 
     test('test tile outside of bounds', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       expect(() => layer?.tile(256, 256), throwsException);
     });
 
     test('test image', () async {
-      layer = Layer(LayerType.top, "assets/happy_map");
+      layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
       var image = await layer?.image(0, 0, 256, 256);
       expect(image, isNotNull);
@@ -216,6 +217,19 @@ void main() async {
       expect(green, tile.color().toRgbColor().g);
       expect(blue, tile.color().toRgbColor().b);
       expect(alpha, 255);
+    });
+  });
+
+  group('Layer from memory', () {
+    setUp(() {
+      TileInfoRepository().loadAll(clear: true);
+    });
+
+    test('test validateSync on a valid in-memory map file', () {
+      var bytes = Uint8List.fromList(
+          File("assets/happy_map/top_layer.map").readAsBytesSync());
+      layer = Layer.memory(LayerType.top, bytes);
+      expect(layer?.validateSync(), true);
     });
   });
 }

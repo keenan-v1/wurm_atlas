@@ -15,6 +15,6 @@ Please see the `flutter_example` folder for a fully functional graphical map vie
 To test the example:
 1. Change directory into `example/flutter_example`.
 2. Run `flutter pub get`.
-3. RUn `flutter run` and select your desired build.
+3. Run `flutter run` and select your desired build.
 
 You can then open a map file by clicking on the lower-right button.
