@@ -11,6 +11,7 @@ import 'package:wurm_atlas/src/layer_type.dart';
 /// - [LayerType] for the layer type enum, which includes validation data
 ///
 class ValidationException implements Exception {
+  /// The message indicating why the validation failed.
   final String message;
 
   ValidationException(this.message);

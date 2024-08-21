@@ -28,18 +28,21 @@ typedef ProgressCallback = void Function(int count, int total);
 /// - [TileReader], the class for reading tiles from a layer file.
 /// - [ValidationException], the exception thrown when validation fails.
 class Layer {
+  /// The [LayerType] of the layer, e.g. [LayerType.top].
   final LayerType type;
+  /// The path to the map folder.
   final String mapFolder;
-  final TileReader reader;
+  /// The [TileReader] for reading tiles from the layer file.
+  final TileReader _reader = TileReader();
 
   /// The size of the layer in bytes.
-  int get size => reader.size;
+  int get size => _reader.size;
 
   /// The path to the layer file.
   String get layerFilePath => "$mapFolder/${type.fileName}";
 
   /// Creates a new layer with the given [type] and [mapFolder].
-  Layer(this.type, this.mapFolder) : reader = TileReader();
+  Layer(this.type, this.mapFolder);
 
   /// Opens the layer file synchronously.
   ///
@@ -61,7 +64,7 @@ class Layer {
   /// - [closeSync], the method for closing the layer file synchronously.
   /// - [close], the asynchronous version of the method for closing the layer file.
   void openSync() {
-    reader.openSync(layerFilePath);
+    _reader.openSync(layerFilePath);
   }
 
   /// Opens the layer file asynchronously.
@@ -84,7 +87,7 @@ class Layer {
   /// - [close], the method for closing the layer file asynchronously.
   /// - [closeSync], the synchronous version of the method for closing the layer file.
   Future<void> open() async {
-    await reader.open(layerFilePath);
+    await _reader.open(layerFilePath);
   }
 
   /// Closes the layer file synchronously.
@@ -106,7 +109,7 @@ class Layer {
   /// - [open], the asynchronous version of the method for opening the layer file.
   ///
   void closeSync() {
-    reader.closeSync();
+    _reader.closeSync();
   }
 
   /// Closes the layer file asynchronously.
@@ -128,7 +131,7 @@ class Layer {
   /// - [openSync], the synchronous version of the method for opening the layer file.
   ///
   Future<void> close() async {
-    await reader.close();
+    await _reader.close();
   }
 
   /// Validates the layer synchronously.
@@ -151,13 +154,13 @@ class Layer {
   /// - [open], the asynchronous version of the method for opening the layer file.
   ///
   bool validateSync() {
-    if (reader.magicNumber != type.magicNumber) {
+    if (_reader.magicNumber != type.magicNumber) {
       throw ValidationException(
-          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${reader.magicNumber}");
+          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${_reader.magicNumber}");
     }
-    if (reader.version != type.version) {
+    if (_reader.version != type.version) {
       throw ValidationException(
-          "Version mismatch. Expected: ${type.version}, got: ${reader.version}");
+          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
     }
     return true;
   }
@@ -182,13 +185,13 @@ class Layer {
   /// - [openSync], the synchronous version of the method for opening the layer file.
   ///
   Future<bool> validate() async {
-    if (reader.magicNumber != type.magicNumber) {
+    if (_reader.magicNumber != type.magicNumber) {
       throw ValidationException(
-          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${reader.magicNumber}");
+          "Magic number mismatch. Expected: ${type.magicNumber}, got: ${_reader.magicNumber}");
     }
-    if (reader.version != type.version) {
+    if (_reader.version != type.version) {
       throw ValidationException(
-          "Version mismatch. Expected: ${type.version}, got: ${reader.version}");
+          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
     }
     return true;
   }
@@ -215,7 +218,7 @@ class Layer {
     validateSync();
     var tiles = <Tile>[];
     for (var h = y; h < y + height; h++) {
-      tiles.addAll(reader.readTileRowSync(h, startX: x, width: width));
+      tiles.addAll(_reader.readTileRowSync(h, startX: x, width: width));
     }
     return tiles;
   }
@@ -241,7 +244,7 @@ class Layer {
   Stream<Tile> tiles(int x, int y, int width, int height) async* {
     await validate();
     for (var h = y; h < y + height; h++) {
-      yield* reader.readTileRow(h, startX: x, width: width);
+      yield* _reader.readTileRow(h, startX: x, width: width);
     }
   }
 
@@ -265,7 +268,7 @@ class Layer {
   ///
   Tile tileSync(int x, int y) {
     validateSync();
-    return reader.readTileSync(x, y);
+    return _reader.readTileSync(x, y);
   }
 
   /// Reads a single tile asynchronously.
@@ -288,7 +291,7 @@ class Layer {
   ///
   Future<Tile> tile(int x, int y) async {
     await validate();
-    return await reader.readTile(x, y);
+    return await _reader.readTile(x, y);
   }
 
   /// Creates an image of the layer asynchronously.
@@ -318,7 +321,7 @@ class Layer {
     var count = 0;
     var total = width * height;
     for (var y = 0; y < height; y++) {
-      await reader.readTileRow(y, startX: x, width: width).forEach((tile) {
+      await _reader.readTileRow(y, startX: x, width: width).forEach((tile) {
         var offset = (y * width + tile.x) * 4;
         image.asByteData().setInt32(
             offset, tile.color(showWater: showWater).toInt(), Endian.little);
@@ -353,7 +356,7 @@ class Layer {
     validateSync();
     var image = Uint8List(width * height * 4).buffer;
     for (var y = 0; y < height; y++) {
-      reader.readTileRowSync(y, startX: x, width: width).forEach((tile) {
+      _reader.readTileRowSync(y, startX: x, width: width).forEach((tile) {
         var offset = (y * width + tile.x) * 4;
         image.asByteData().setInt32(
             offset, tile.color(showWater: showWater).toInt(), Endian.little);
