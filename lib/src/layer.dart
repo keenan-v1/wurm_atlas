@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
-import 'package:wurm_atlas/src/color_convert.dart';
+import 'package:image/image.dart';
 import 'package:wurm_atlas/src/file_tile_reader.dart';
 import 'package:wurm_atlas/src/layer_type.dart';
 import 'package:wurm_atlas/src/memory_tile_reader.dart';
@@ -324,35 +324,42 @@ class Layer {
   /// Layer layer = Layer(LayerType.top, "maps");
   /// await layer.open();
   /// await layer.validate();
-  /// var image = await layer.image(0, 0, 10, 10);
+  /// var image = await layer.image(width: 10, height: 10);
   /// await layer.close();
   /// ```
   ///
   /// See also:
   /// - [imageSync], the synchronous version of this method.
   ///
-  Future<ByteBuffer> image(int x, int y, int width, int height,
-      {bool showWater = false, ProgressCallback? onProgress}) async {
+  Future<Uint8List> image(
+      {int x = 0,
+      int y = 0,
+      int? width,
+      int? height,
+      bool showWater = false,
+      ProgressCallback? onProgress}) async {
     await validate();
-    var image = Uint8List(width * height * 4).buffer;
+    width ??= size;
+    height ??= size;
+    var img = Image(width: width, height: height);
     var count = 0;
     var total = width * height;
     for (var y = 0; y < height; y++) {
       await _reader.readTileRow(y, startX: x, width: width).forEach((tile) {
-        var offset = (y * width + tile.x) * 4;
-        image.asByteData().setInt32(
-            offset, tile.color(showWater: showWater).toInt(), Endian.little);
+        img.setPixel(tile.x, tile.y, tile.color(showWater: showWater));
         count++;
         onProgress?.call(count, total);
       });
     }
-    return image;
+    return encodePng(img);
   }
 
   /// Creates an image of the layer synchronously.
   ///
   /// This method creates an image of the layer from [x],[y] to [x] + [width], [y] + [height].
-  /// Optionally, you can set [showWater] to true to show water tiles as water.
+  /// The [showWater] parameter overlays water tiles with water color if set to true.
+  /// All parameters are optional and default to 0 in the case of [x] and [y],
+  /// and the size of the layer for [width] and [height].
   ///
   /// It returns a [ByteBuffer] containing the image data in ABGR format.
   ///
@@ -361,24 +368,24 @@ class Layer {
   /// Layer layer = Layer(LayerType.top, "maps");
   /// layer.openSync();
   /// layer.validateSync();
-  /// var image = layer.imageSync(0, 0, 10, 10);
+  /// var image = layer.imageSync(width: 10, height: 10);
   /// layer.closeSync();
   /// ```
   ///
   /// See also:
   /// - [image], the asynchronous version of this method.
   ///
-  ByteBuffer imageSync(int x, int y, int width, int height,
-      {bool showWater = false}) {
+  Uint8List imageSync(
+      {int x = 0, int y = 0, int? width, int? height, bool showWater = false}) {
     validateSync();
-    var image = Uint8List(width * height * 4).buffer;
+    width ??= size;
+    height ??= size;
+    var img = Image(width: width, height: height);
     for (var y = 0; y < height; y++) {
       _reader.readTileRowSync(y, startX: x, width: width).forEach((tile) {
-        var offset = (y * width + tile.x) * 4;
-        image.asByteData().setInt32(
-            offset, tile.color(showWater: showWater).toInt(), Endian.little);
+        img.setPixel(tile.x, tile.y, tile.color(showWater: showWater));
       });
     }
-    return image;
+    return encodePng(img);
   }
 }

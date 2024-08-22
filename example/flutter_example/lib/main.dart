@@ -1,10 +1,10 @@
-import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:logging/logging.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
-import 'package:image/image.dart' as img;
 import 'package:photo_view/photo_view.dart';
 
 void main() {
@@ -52,49 +52,56 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _openMap() async => FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ["map"]).then((result) async {
-        setState(() {
-          isLoading = true;
-          image = null;
-        });
-        var selectedFile = result!.files.first;
-        var layerType =
-            LayerType.values.firstWhere((t) => t.fileName == selectedFile.name);
-        _logger.info("Opening map: ${selectedFile}");
-        var mapFolder = selectedFile.path!.substring(
-            0, selectedFile.path!.lastIndexOf(Platform.pathSeparator));
-        var layer = Layer.file(layerType, mapFolder);
-        await layer.open();
-
-        var newImage = Image.memory(
-          img.encodePng(
-            img.Image.fromBytes(
-              width: layer.size,
-              height: layer.size,
-              bytes: await layer.image(0, 0, layer.size, layer.size,
-                  showWater: true, onProgress: _imageProgress),
-              numChannels: 4,
-              order: img.ChannelOrder.bgra,
-            ),
-          ),
-        );
+  void _openMapInMemory() async {
+    const XTypeGroup typeGroup = XTypeGroup(
+      label: 'Wurm Unlimited map files',
+      extensions: <String>['map'],
+    );
+    var file = await openFile(acceptedTypeGroups: [typeGroup]);
+    if (file == null) {
+      return;
+    }
+    var fileSize = await file.length();
+    setState(() {
+      isLoading = true;
+      image = null;
+      total = fileSize;
+      count = 0;
+    });
+    var layerType = LayerType.values.firstWhere((t) => t.fileName == file.name,
+        orElse: () => LayerType.top);
+    _logger.info("Opening map: ${file.name}");
+    var stream = file.openRead();
+    var bytes = <int>[];
+    stream.listen(
+      (data) {
+        _imageProgress(count + data.length, total);
+        bytes.addAll(data);
+      },
+      onDone: () async {
+        _logger.info("Map loaded");
+        var layer = Layer.memory(layerType, Uint8List.fromList(bytes));
+        var pixels =
+            await layer.image(showWater: true, onProgress: _imageProgress);
+        var newImage = Image.memory(pixels);
         setState(() {
           image = newImage;
           isLoading = false;
+          count = 0;
+          total = 0;
         });
-      });
+      },
+      cancelOnError: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double progressValue = 0.0;
-    if (total == 0) {
-      progressValue = 0.0;
-    } else {
+    if (total > 0) {
       progressValue = count / total;
     }
-    var imageWidget = image != null
+    var imageWidget = image != null && !isLoading
         ? LayoutBuilder(
             builder: (context, constraints) => Listener(
               onPointerSignal: (event) {
@@ -127,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: imageWidget,
       floatingActionButton: FloatingActionButton(
-        onPressed: _openMap,
+        onPressed: _openMapInMemory,
         tooltip: 'Open Map',
         child: const Icon(Icons.map),
       ),

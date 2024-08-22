@@ -1,4 +1,4 @@
-import 'package:color/color.dart';
+import 'package:image/image.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
 
 /// Tile class
@@ -53,11 +53,9 @@ class Tile {
     if (!showWater || height > 0) {
       return info.color;
     }
-    final rgbColor = info.color.toRgbColor();
-
-    final r = rgbColor.r * 0.2 + 0.4 * 0.4 * 256;
-    final g = rgbColor.g * 0.2 + 0.5 * 0.4 * 256;
-    final b = rgbColor.b * 0.2 + 1.0 * 0.4 * 256;
-    return Color.rgb(r, g, b);
+    final r = (info.color.r * 0.2 + 0.4 * 0.4 * 256).toInt();
+    final g = (info.color.g * 0.2 + 0.5 * 0.4 * 256).toInt();
+    final b = (info.color.b * 0.2 + 1.0 * 0.4 * 256).toInt();
+    return ColorUint8.rgb(r, g, b);
   }
 }

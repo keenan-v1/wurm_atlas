@@ -13,7 +13,7 @@ class ReadTileBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    layer.imageSync(0, 0, 256, 256);
+    layer.imageSync(showWater: true);
   }
 
   @override

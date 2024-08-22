@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:image/image.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 import 'package:wurm_atlas/src/utils/test_utils.dart';
@@ -110,19 +111,15 @@ void main() async {
     test('test imageSync', () {
       layer = Layer.file(LayerType.top, "assets/happy_map");
       layer?.openSync();
-      var image = layer?.imageSync(0, 0, 256, 256);
+      var image = layer?.imageSync(showWater: true);
       expect(image, isNotNull);
-      expect(image, isA<ByteBuffer>());
+      expect(image, isA<Uint8List>());
       var tile = layer?.tileSync(0, 0) ?? emptyTile;
-      // The image is in BGRA format
-      var blue = image!.asUint8List(0, 1)[0];
-      var green = image.asUint8List(1, 1)[0];
-      var red = image.asUint8List(2, 1)[0];
-      var alpha = image.asUint8List(3, 1)[0];
-      expect(red, tile.color().toRgbColor().r);
-      expect(green, tile.color().toRgbColor().g);
-      expect(blue, tile.color().toRgbColor().b);
-      expect(alpha, 255);
+      var decodedImage = decodePng(image!);
+      expect(decodedImage, isNotNull);
+      expect(decodedImage!.width, 256);
+      expect(decodedImage.height, 256);
+      expect(decodedImage.getPixel(0, 0), tile.color(showWater: true));
     });
   });
 
@@ -205,19 +202,16 @@ void main() async {
     test('test image', () async {
       layer = Layer.file(LayerType.top, "assets/happy_map");
       await layer?.open();
-      var image = await layer?.image(0, 0, 256, 256);
+      var image = await layer?.image(showWater: true);
       expect(image, isNotNull);
-      expect(image, isA<ByteBuffer>());
+      expect(image, isA<Uint8List>());
       var tile = await layer?.tile(0, 0) ?? emptyTile;
-      // The image is in BGRA format
-      var blue = image!.asUint8List(0, 1)[0];
-      var green = image.asUint8List(1, 1)[0];
-      var red = image.asUint8List(2, 1)[0];
-      var alpha = image.asUint8List(3, 1)[0];
-      expect(red, tile.color().toRgbColor().r);
-      expect(green, tile.color().toRgbColor().g);
-      expect(blue, tile.color().toRgbColor().b);
-      expect(alpha, 255);
+      // The image is in PNG format
+      var decodedImage = decodePng(image!);
+      expect(decodedImage, isNotNull);
+      expect(decodedImage!.width, 256);
+      expect(decodedImage.height, 256);
+      expect(decodedImage.getPixel(0, 0), tile.color(showWater: true));
     });
   });
 
@@ -304,19 +298,16 @@ void main() async {
     });
 
     test('test imageSync on a valid in-memory map file', () {
-      var image = layer.imageSync(0, 0, 256, 256);
+      var image = layer.imageSync(showWater: true);
       expect(image, isNotNull);
-      expect(image, isA<ByteBuffer>());
+      expect(image, isA<Uint8List>());
       var tile = layer.tileSync(0, 0);
-      // The image is in BGRA format
-      var blue = image.asUint8List(0, 1)[0];
-      var green = image.asUint8List(1, 1)[0];
-      var red = image.asUint8List(2, 1)[0];
-      var alpha = image.asUint8List(3, 1)[0];
-      expect(red, tile.color().toRgbColor().r);
-      expect(green, tile.color().toRgbColor().g);
-      expect(blue, tile.color().toRgbColor().b);
-      expect(alpha, 255);
+      // The image is in PNG format
+      var decodedImage = decodePng(image);
+      expect(decodedImage, isNotNull);
+      expect(decodedImage!.width, 256);
+      expect(decodedImage.height, 256);
+      expect(decodedImage.getPixel(0, 0), tile.color(showWater: true));
     });
   });
 }

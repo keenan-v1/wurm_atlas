@@ -1,4 +1,4 @@
-import 'package:color/color.dart';
+import 'package:image/image.dart';
 import 'package:wurm_atlas/src/color_convert.dart';
 import 'package:wurm_atlas/src/tile_info_repository.dart';
 import 'package:yaml/yaml.dart';

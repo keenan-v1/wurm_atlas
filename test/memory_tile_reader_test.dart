@@ -5,7 +5,8 @@ import 'package:wurm_atlas/wurm_atlas.dart';
 
 void main() async {
   group('MemoryTileReader: ', () {
-    MemoryTileReader tileReader = MemoryTileReader(File("assets/happy_map/top_layer.map").readAsBytesSync());
+    MemoryTileReader tileReader = MemoryTileReader(
+        File("assets/happy_map/top_layer.map").readAsBytesSync());
 
     test('test getters', () {
       expect(tileReader.size, 256);
@@ -42,7 +43,8 @@ void main() async {
   });
 
   group('MemoryTileReader async:', () {
-    MemoryTileReader tileReader = MemoryTileReader(File("assets/happy_map/top_layer.map").readAsBytesSync());
+    MemoryTileReader tileReader = MemoryTileReader(
+        File("assets/happy_map/top_layer.map").readAsBytesSync());
 
     test('test reading a tile', () async {
       Tile tile = await tileReader.readTile(0, 0);

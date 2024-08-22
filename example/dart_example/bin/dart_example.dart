@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
-import 'package:image/image.dart' as img;
 
 ArgParser buildParser() {
   return ArgParser()
@@ -54,15 +53,7 @@ void dumpMap(LayerType layerType, String mapPath, String outputFileName,
     ..openSync()
     ..validateSync();
   print("Map size: ${layer.size}");
-  var s = layer.size;
-  var image = img.Image.fromBytes(
-      width: s,
-      height: s,
-      bytes: layer.imageSync(0, 0, s, s, showWater: showWater),
-      numChannels: 4,
-      order: img.ChannelOrder.bgra);
-  var bytes = img.encodePng(image);
-  File(outputFileName).writeAsBytesSync(bytes);
+  File(outputFileName).writeAsBytesSync(layer.imageSync(showWater: showWater));
   print("Image written to $outputFileName");
   layer.closeSync();
 }

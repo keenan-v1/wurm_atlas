@@ -1,4 +1,4 @@
-import 'package:color/color.dart';
+import 'package:image/image.dart';
 
 /// Extension methods for converting colors from various formats.
 ///
@@ -42,7 +42,7 @@ extension ColorConvert on Color {
       final red = int.parse(match.group(1)!);
       final green = int.parse(match.group(2)!);
       final blue = int.parse(match.group(3)!);
-      return Color.rgb(red, green, blue);
+      return ColorUint8.rgb(red, green, blue);
     }
     throw FormatException('Invalid RGB string: $rgbString');
   }
@@ -59,7 +59,10 @@ extension ColorConvert on Color {
     hexString = hexString.toUpperCase().replaceAll('#', '');
     if (hexString.length == 3) hexString = _convert3To6(hexString);
     buffer.write(hexString);
-    return Color.hex(buffer.toString());
+    var r = int.parse(buffer.toString().substring(0, 2), radix: 16);
+    var g = int.parse(buffer.toString().substring(2, 4), radix: 16);
+    var b = int.parse(buffer.toString().substring(4, 6), radix: 16);
+    return ColorUint8.rgb(r, g, b);
   }
 
   static String _convert3To6(String hex) {
@@ -67,19 +70,5 @@ extension ColorConvert on Color {
       return hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }
     return hex;
-  }
-
-  /// Converts a color to an integer.
-  ///
-  /// The integer is in the format 0xAARRGGBB.
-  ///
-  /// ```dart
-  /// Color.hex("#00ff00").toInt() == 0xff00ff00
-  /// ```
-  int toInt() {
-    final red = (toRgbColor().r).toInt();
-    final green = (toRgbColor().g).toInt();
-    final blue = (toRgbColor().b).toInt();
-    return (255 << 24) | (red << 16) | (green << 8) | blue;
   }
 }

@@ -45,7 +45,12 @@ class MemoryTileReader extends BaseTileReader {
   MemoryTileReader(this._bytes)
       : _size = 1 << _bytes.buffer.asByteData(9).getInt8(0),
         _version = _bytes.buffer.asByteData(8).getInt8(0),
-        _magicNumber = BigInt.from(_bytes.buffer.asByteData(0, 8).getUint64(0));
+        _magicNumber = BigInt.parse(
+            _bytes
+                .sublist(0, 8)
+                .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
+                .join(''),
+            radix: 16);
 
   /// Reads a tile at the given [x] and [y] position.
   ///
