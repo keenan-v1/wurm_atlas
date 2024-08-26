@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:image/image.dart';
 import 'package:logging/logging.dart';
+import 'package:wurm_atlas/src/exceptions.dart';
 import 'package:wurm_atlas/src/tile.dart';
 import 'package:wurm_atlas/src/tile_info_repository.dart';
 import 'package:wurm_atlas/src/layer.dart';
@@ -23,34 +25,86 @@ import 'package:wurm_atlas/src/base_tile_reader.dart';
 /// - [Layer] for the layer class which uses the tile reader
 ///
 class MemoryTileReader extends BaseTileReader {
-  static final Logger _logger = Logger('MemoryTileReader');
-  final Uint8List _bytes;
-  final int _size;
-  final int _version;
-  final BigInt _magicNumber;
+  static final _logger = Logger('MemoryTileReader');
+  Uint8List _data;
 
   /// The size of the map
   @override
-  int get size => _size;
+  int get size => 1 << _data.buffer.asByteData(9).getInt8(0);
 
   /// The version of the map
   @override
-  int get version => _version;
+  int get version => _data.buffer.asByteData(8).getInt8(0);
+
+  int get length => _data.length;
 
   /// The magic number of the map
   @override
-  BigInt get magicNumber => _magicNumber;
+  BigInt get magicNumber => BigInt.parse(
+      _data
+          .sublist(0, 8)
+          .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
+          .join(''),
+      radix: 16);
+
+  MemoryTileReader.empty() : _data = Uint8List(0);
 
   /// Memory-based map tile reader constructor
-  MemoryTileReader(this._bytes)
-      : _size = 1 << _bytes.buffer.asByteData(9).getInt8(0),
-        _version = _bytes.buffer.asByteData(8).getInt8(0),
-        _magicNumber = BigInt.parse(
-            _bytes
-                .sublist(0, 8)
-                .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
-                .join(''),
-            radix: 16);
+  MemoryTileReader(this._data);
+
+  Future<Uint8List> streamImage(Stream<List<int>> stream,
+      {ProgressCallback? onProgress, bool showWater = true}) async {
+    Image? image;
+    var tileIndex = 0;
+
+    await for (final chunk in stream) {
+      addAll(chunk);
+      var readTo = BaseTileReader.headerBytes +
+          (BaseTileReader.tileDataSize * tileIndex);
+      if (length < readTo) {
+        continue;
+      }
+
+      image ??= Image(width: size, height: size);
+
+      while (length > (readTo + BaseTileReader.tileDataSize)) {
+        var tile = readTilePosition(readTo);
+        image.setPixel(tile.x, tile.y, tile.color(showWater: showWater));
+        onProgress?.call(tileIndex, size * size);
+        tileIndex++;
+        readTo = BaseTileReader.headerBytes +
+            (BaseTileReader.tileDataSize * tileIndex);
+        if (tileIndex >= size * size) {
+          break;
+        }
+      }
+    }
+    _logger.info("Generating $size x $size PNG");
+    return encodePng(image!);
+  }
+
+  void addAll(List<int> bytes) {
+    _data = Uint8List.fromList(_data + bytes);
+  }
+
+  Tile readTilePosition(int position) {
+    var (x, y) = tilePositionToXY(position);
+    if (position < 0 || position >= _data.length) {
+      throw OutOfBoundsException("Tile position out of map bounds",
+          position: position, x: x, y: y);
+    }
+    var tileData = _data.buffer
+        .asByteData(position, BaseTileReader.tileDataSize)
+        .getInt32(0, Endian.big);
+    return parseTile(tileData, x, y);
+  }
+
+  static Tile parseTile(int tileData, int x, int y) {
+    var height = BaseTileReader.tileHeight(tileData);
+    var tileInfo =
+        TileInfoRepository().getTileInfo(BaseTileReader.tileInfoId(tileData))!;
+    return Tile(x, y, height, tileInfo);
+  }
 
   /// Reads a tile at the given [x] and [y] position.
   ///
@@ -72,16 +126,14 @@ class MemoryTileReader extends BaseTileReader {
   @override
   Tile readTileSync(int x, int y) {
     final position = tilePosition(x, y);
-    if (position < 0 || position >= _bytes.length) {
-      throw Exception("Tile position out of map bounds");
+    if (position < 0 || position >= _data.length) {
+      throw OutOfBoundsException("Tile position out of map bounds",
+          x: x, y: y, position: position);
     }
-    final tileData = _bytes.buffer
-        .asByteData(position, tileDataSize)
+    final tileData = _data.buffer
+        .asByteData(position, BaseTileReader.tileDataSize)
         .getInt32(0, Endian.big);
-    var height = tileHeight(tileData);
-    var tileInfo = TileInfoRepository().getTileInfo(tileInfoId(tileData))!;
-    _logger.fine("Read tile: $x, $y, $height, $tileInfo");
-    return Tile(x, y, height, tileInfo);
+    return parseTile(tileData, x, y);
   }
 
   /// Reads a tile at the given [x] and [y] position.
@@ -127,24 +179,19 @@ class MemoryTileReader extends BaseTileReader {
   List<Tile> readTileRowSync(int startY, {int startX = 0, int? width}) {
     width ??= size;
     final position = tilePosition(startX, startY);
-    if (position < 0 || position >= _bytes.length) {
+    if (position < 0 || position >= _data.length) {
       throw Exception("Row position out of map bounds");
     }
-    final data = _bytes.buffer.asUint8List(position, width * tileDataSize);
+    final row =
+        _data.buffer.asUint8List(position, width * BaseTileReader.tileDataSize);
     return List.generate(width, (x) {
-      final tileDataOffset = x * tileDataSize;
-      final tileData = data
-          .sublist(tileDataOffset, tileDataOffset + tileDataSize)
+      final tileDataOffset = x * BaseTileReader.tileDataSize;
+      final tileData = row
+          .sublist(tileDataOffset, tileDataOffset + BaseTileReader.tileDataSize)
           .buffer
           .asByteData()
           .getInt32(0, Endian.big);
-      var height = tileHeight(tileData);
-      var tileInfo = TileInfoRepository().getTileInfo(tileInfoId(tileData))!;
-      var tileX = startX + x;
-      var tileY = startY;
-      _logger.fine(
-          "Read tile pos: ($tileX, $tileY) height: $height info: $tileInfo");
-      return Tile(tileX, tileY, height, tileInfo);
+      return parseTile(tileData, startX + x, startY);
     });
   }
 
@@ -169,7 +216,22 @@ class MemoryTileReader extends BaseTileReader {
   /// - [Tile] for the tile class
   ///
   @override
-  Stream<Tile> readTileRow(int startY, {int startX = 0, int? width}) =>
-      Stream.fromIterable(
-          readTileRowSync(startY, startX: startX, width: width));
+  Stream<Tile> readTileRow(int startY, {int startX = 0, int? width}) async* {
+    width ??= size;
+    final position = tilePosition(startX, startY);
+    if (position < 0 || position >= _data.length) {
+      throw Exception("Row position out of map bounds");
+    }
+    final row =
+        _data.buffer.asUint8List(position, width * BaseTileReader.tileDataSize);
+    for (var x = 0; x < width; x++) {
+      final tileDataOffset = x * BaseTileReader.tileDataSize;
+      final tileData = row
+          .sublist(tileDataOffset, tileDataOffset + BaseTileReader.tileDataSize)
+          .buffer
+          .asByteData()
+          .getInt32(0, Endian.big);
+      yield parseTile(tileData, startX + x, startY);
+    }
+  }
 }

@@ -201,12 +201,12 @@ class FileTileReader extends BaseTileReader {
     }
     _raf!.setPositionSync(position);
     final tileData = _raf!
-        .readSync(tileDataSize)
+        .readSync(BaseTileReader.tileDataSize)
         .buffer
         .asByteData()
         .getInt32(0, Endian.big);
-    var height = tileHeight(tileData);
-    var tileInfo = TileInfoRepository().getTileInfo(tileInfoId(tileData))!;
+    var height = BaseTileReader.tileHeight(tileData);
+    var tileInfo = TileInfoRepository().getTileInfo(BaseTileReader.tileInfoId(tileData))!;
     _logger.fine("Read tile: $x, $y, $height, $tileInfo");
     return Tile(x, y, height, tileInfo);
   }
@@ -240,12 +240,12 @@ class FileTileReader extends BaseTileReader {
       throw Exception("Tile position out of file bounds");
     }
     await _raf!.setPosition(position);
-    final tileData = (await _raf!.read(tileDataSize))
+    final tileData = (await _raf!.read(BaseTileReader.tileDataSize))
         .buffer
         .asByteData()
         .getInt32(0, Endian.big);
-    return Tile(x, y, tileHeight(tileData),
-        TileInfoRepository().getTileInfo(tileInfoId(tileData))!);
+    return Tile(x, y, BaseTileReader.tileHeight(tileData),
+        TileInfoRepository().getTileInfo(BaseTileReader.tileInfoId(tileData))!);
   }
 
   /// Read a row of tiles synchronously
@@ -280,16 +280,16 @@ class FileTileReader extends BaseTileReader {
       throw Exception("Row position out of file bounds");
     }
     _raf!.setPositionSync(position);
-    final data = _raf!.readSync(width * tileDataSize);
+    final data = _raf!.readSync(width * BaseTileReader.tileDataSize);
     return List.generate(width, (x) {
-      final tileDataOffset = x * tileDataSize;
+      final tileDataOffset = x * BaseTileReader.tileDataSize;
       final tileData = data
-          .sublist(tileDataOffset, tileDataOffset + tileDataSize)
+          .sublist(tileDataOffset, tileDataOffset + BaseTileReader.tileDataSize)
           .buffer
           .asByteData()
           .getInt32(0, Endian.big);
-      var height = tileHeight(tileData);
-      var tileInfo = TileInfoRepository().getTileInfo(tileInfoId(tileData))!;
+      var height = BaseTileReader.tileHeight(tileData);
+      var tileInfo = TileInfoRepository().getTileInfo(BaseTileReader.tileInfoId(tileData))!;
       var tileX = startX + x;
       var tileY = startY;
       _logger.fine(
@@ -331,16 +331,16 @@ class FileTileReader extends BaseTileReader {
       throw Exception("Row position out of file bounds");
     }
     await _raf!.setPosition(position);
-    final data = await _raf!.read(width * tileDataSize);
+    final data = await _raf!.read(width * BaseTileReader.tileDataSize);
     for (var x = 0; x < width; x++) {
-      final tileDataOffset = x * tileDataSize;
+      final tileDataOffset = x * BaseTileReader.tileDataSize;
       final tileData = data
-          .sublist(tileDataOffset, tileDataOffset + tileDataSize)
+          .sublist(tileDataOffset, tileDataOffset + BaseTileReader.tileDataSize)
           .buffer
           .asByteData()
           .getInt32(0, Endian.big);
-      var height = tileHeight(tileData);
-      var tileInfo = TileInfoRepository().getTileInfo(tileInfoId(tileData))!;
+      var height = BaseTileReader.tileHeight(tileData);
+      var tileInfo = TileInfoRepository().getTileInfo(BaseTileReader.tileInfoId(tileData))!;
       var tileX = startX + x;
       var tileY = startY;
       _logger.fine(

@@ -26,7 +26,7 @@ import 'package:wurm_atlas/src/file_tile_reader.dart';
 import 'package:wurm_atlas/src/memory_tile_reader.dart';
 import 'package:wurm_atlas/src/layer.dart';
 import 'package:wurm_atlas/src/layer_type.dart';
-import 'package:wurm_atlas/src/validation_exception.dart';
+import 'package:wurm_atlas/src/exceptions.dart';
 
 export 'src/tile_info.dart' show TileInfo;
 export 'src/color_convert.dart' show ColorConvert;
@@ -37,4 +37,4 @@ export 'src/file_tile_reader.dart' show FileTileReader;
 export 'src/memory_tile_reader.dart' show MemoryTileReader;
 export 'src/layer.dart' show Layer, ProgressCallback;
 export 'src/layer_type.dart' show LayerType;
-export 'src/validation_exception.dart' show ValidationException;
+export 'src/exceptions.dart' show ValidationException;

@@ -16,3 +16,13 @@ class ValidationException implements Exception {
 
   ValidationException(this.message);
 }
+
+
+class OutOfBoundsException implements Exception {
+  final String message;
+  final int? x;
+  final int? y;
+  final int? position;
+
+  OutOfBoundsException(this.message, {this.x, this.y, this.position});
+}

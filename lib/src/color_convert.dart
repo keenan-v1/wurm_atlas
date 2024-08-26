@@ -71,4 +71,13 @@ extension ColorConvert on Color {
     }
     return hex;
   }
+
+  /// Converts a color to an integer.
+  /// 
+  /// The integer is in the format 0xAARRGGBB.
+  /// 
+  /// ```dart
+  /// Color.hex("#00ff00").toInt() == 0xff00ff00
+  /// ```
+  int toInt() => (255 << 24) | (r.toInt() << 16) | (g.toInt() << 8) | b.toInt();
 }

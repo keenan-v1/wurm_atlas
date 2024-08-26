@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:image/image.dart';
+import 'package:logging/logging.dart';
 import 'package:test/test.dart';
+import 'package:wurm_atlas/src/utils/test_utils.dart';
 import 'package:wurm_atlas/wurm_atlas.dart';
 
 void main() async {
@@ -71,6 +74,30 @@ void main() async {
 
     test('test reading tile rows outside of bounds', () async {
       expect(() => tileReader.readTileRow(256).toList(), throwsException);
+    });
+  });
+
+  group("MemoryTileReader from stream:", () {
+    MemoryTileReader? tileReader;
+    TestUtils.enableLogging(Level.ALL);
+    setUp(() {
+      tileReader = MemoryTileReader.empty();
+    });
+
+    test('test streaming map into reader', () async {
+      var file = File("assets/happy_map/top_layer.map");
+      var water = true;
+      var stream = file.openRead();
+      var pixels = await tileReader!.streamImage(stream, showWater: water);
+      expect(tileReader!.size, 256);
+      expect(tileReader!.version, LayerType.top.version);
+      expect(tileReader!.magicNumber, BigInt.parse("0x474A2198B2781B9D"));
+      var decodedImage = decodePng(pixels);
+      expect(decodedImage, isNotNull);
+      expect(decodedImage!.width, 256);
+      expect(decodedImage.height, 256);
+      Tile tile = tileReader!.readTileSync(0, 0);
+      expect(decodedImage.getPixel(0, 0), tile.color(showWater: water));
     });
   });
 }

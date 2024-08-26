@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:logging/logging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,11 @@ import 'package:photo_view/photo_view.dart';
 
 void main() {
   runApp(const MyApp());
+  Logger.root.level = Level.FINE;
+  Logger.root.onRecord.listen((LogRecord r) {
+    // ignore: avoid_print
+    print(r);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -38,61 +41,73 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static final Logger _logger = Logger("MyHomePage");
+  static final Logger _logger = Logger('WurmAtlasDemo');
   Image? image;
   bool isLoading = false;
   int count = 0;
   int total = 0;
+  String? status;
   final _viewController = PhotoViewController();
 
   void _imageProgress(int current, int total) {
-    setState(() {
-      count = current;
-      this.total = total;
-    });
+    if (current % 1000 == 0) {
+      _logger.fine("Image progress: $current / $total");
+      setState(() {
+        count = current;
+        this.total = total;
+      });
+    }
   }
 
-  void _openMapInMemory() async {
-    const XTypeGroup typeGroup = XTypeGroup(
-      label: 'Wurm Unlimited map files',
-      extensions: <String>['map'],
-    );
-    var file = await openFile(acceptedTypeGroups: [typeGroup]);
-    if (file == null) {
-      return;
-    }
+  void _openMapFile(XFile file) async {
     var fileSize = await file.length();
+    _logger.fine("Map file size: $fileSize");
     setState(() {
       isLoading = true;
       image = null;
-      total = fileSize;
+      total = 0;
       count = 0;
+      status = "Loading map file: ${file.name}";
     });
     var layerType = LayerType.values.firstWhere((t) => t.fileName == file.name,
         orElse: () => LayerType.top);
-    _logger.info("Opening map: ${file.name}");
-    var stream = file.openRead();
-    var bytes = <int>[];
-    stream.listen(
-      (data) {
-        _imageProgress(count + data.length, total);
-        bytes.addAll(data);
-      },
-      onDone: () async {
-        _logger.info("Map loaded");
-        var layer = Layer.memory(layerType, Uint8List.fromList(bytes));
-        var pixels =
-            await layer.image(showWater: true, onProgress: _imageProgress);
-        var newImage = Image.memory(pixels);
+    _logger.info("Opening map from file: ${file.name}");
+    var pixels = await Layer.stream(layerType).streamImage(file.openRead(), onProgress: _imageProgress);
+    _logger.info("Map opened.");
+    setState(() {
+      status = "Loaded map.";
+      isLoading = false;
+      image = Image.memory(pixels);
+      total = 0;
+      count = 0;
+    });
+  }
+
+  void _openMapInMemory() {
+    setState(() {
+      image = null;
+      isLoading = true;
+      total = 0;
+      count = 0;
+      status = null;
+    });
+    openFile(acceptedTypeGroups: [
+      XTypeGroup(
+        label: 'Wurm Unlimited map files',
+        extensions: <String>['map'],
+      )
+    ]).then((file) {
+      if (file != null) {
         setState(() {
-          image = newImage;
-          isLoading = false;
-          count = 0;
-          total = 0;
+          status = "Opening map file: ${file.name}";
         });
-      },
-      cancelOnError: true,
-    );
+        _openMapFile(file);
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
   }
 
   @override
@@ -134,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: imageWidget,
       floatingActionButton: FloatingActionButton(
-        onPressed: _openMapInMemory,
+        onPressed: () => isLoading ? null : _openMapInMemory(),
         tooltip: 'Open Map',
         child: const Icon(Icons.map),
       ),

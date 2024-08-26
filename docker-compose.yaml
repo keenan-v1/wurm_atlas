@@ -1,0 +1,9 @@
+services:
+  flutter:
+    image: nginx
+    volumes:
+    - ./example/flutter_example/build/web:/usr/share/nginx/html
+    ports:
+    - "8080:80"
+    environment:
+    - NGINX_PORT=80

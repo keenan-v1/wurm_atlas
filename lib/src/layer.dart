@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
@@ -7,7 +8,7 @@ import 'package:wurm_atlas/src/layer_type.dart';
 import 'package:wurm_atlas/src/memory_tile_reader.dart';
 import 'package:wurm_atlas/src/tile.dart';
 import 'package:wurm_atlas/src/base_tile_reader.dart';
-import 'package:wurm_atlas/src/validation_exception.dart';
+import 'package:wurm_atlas/src/exceptions.dart';
 
 /// Function signature for the progress callback.
 typedef ProgressCallback = void Function(int count, int total);
@@ -32,7 +33,7 @@ typedef ProgressCallback = void Function(int count, int total);
 /// - [ValidationException], the exception thrown when validation fails.
 class Layer {
   static final Logger _logger = Logger('Layer');
-  final BigInt _magicNumber = BigInt.parse("0x474A2198B2781B9D");
+  static final BigInt _magicNumber = BigInt.parse("0x474A2198B2781B9D");
 
   /// The [LayerType] of the layer, e.g. [LayerType.top].
   final LayerType type;
@@ -56,6 +57,18 @@ class Layer {
   Layer.memory(this.type, Uint8List bytes)
       : mapFolder = "",
         _reader = MemoryTileReader(bytes);
+  
+  Layer.stream(this.type) : mapFolder = "", _reader = MemoryTileReader.empty();
+
+  /// Creates a new layer with the given [type] and a [MemoryTileReader].
+  Layer(this.type, this._reader) : mapFolder = "";
+
+  Future<Uint8List> streamImage(Stream<Uint8List> stream, {ProgressCallback? onProgress}) async{
+    if (_reader is! MemoryTileReader) {
+      throw Exception("streamImage is only available for MemoryTileReader");
+    }
+    return await _reader.streamImage(stream, onProgress: onProgress);
+  }
 
   /// Opens the layer file synchronously.
   ///
@@ -168,16 +181,16 @@ class Layer {
   ///
   bool validateSync() {
     if (_reader.magicNumber != _magicNumber) {
-      _logger.severe(
-          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
-      throw ValidationException(
-          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
+      var msg =
+          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}";
+      _logger.severe(msg);
+      throw ValidationException(msg);
     }
     if (_reader.version != type.version) {
-      _logger.severe(
-          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
-      throw ValidationException(
-          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
+      var msg =
+          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}";
+      _logger.severe(msg);
+      throw ValidationException(msg);
     }
     return true;
   }
@@ -201,17 +214,7 @@ class Layer {
   /// - [open], the method for opening the layer file asynchronously.
   /// - [openSync], the synchronous version of the method for opening the layer file.
   ///
-  Future<bool> validate() async {
-    if (_reader.magicNumber != _magicNumber) {
-      throw ValidationException(
-          "Magic number mismatch. Expected: $_magicNumber, got: ${_reader.magicNumber}");
-    }
-    if (_reader.version != type.version) {
-      throw ValidationException(
-          "Version mismatch. Expected: ${type.version}, got: ${_reader.version}");
-    }
-    return true;
-  }
+  Future<bool> validate() async => validateSync();
 
   /// Reads tiles synchronously.
   ///
@@ -337,6 +340,7 @@ class Layer {
       int? width,
       int? height,
       bool showWater = false,
+      bool clearCache = false,
       ProgressCallback? onProgress}) async {
     await validate();
     width ??= size;
@@ -344,11 +348,18 @@ class Layer {
     var img = Image(width: width, height: height);
     var count = 0;
     var total = width * height;
+    if (onProgress != null) {
+      Timer.periodic(Duration(milliseconds: 100), (timer) {
+        onProgress(count, total);
+        if (count >= total) {
+          timer.cancel();
+        }
+      });
+    }
     for (var y = 0; y < height; y++) {
       await _reader.readTileRow(y, startX: x, width: width).forEach((tile) {
         img.setPixel(tile.x, tile.y, tile.color(showWater: showWater));
         count++;
-        onProgress?.call(count, total);
       });
     }
     return encodePng(img);
@@ -376,7 +387,7 @@ class Layer {
   /// - [image], the asynchronous version of this method.
   ///
   Uint8List imageSync(
-      {int x = 0, int y = 0, int? width, int? height, bool showWater = false}) {
+      {int x = 0, int y = 0, int? width, int? height, bool showWater = false, bool clearCache = false}) {
     validateSync();
     width ??= size;
     height ??= size;

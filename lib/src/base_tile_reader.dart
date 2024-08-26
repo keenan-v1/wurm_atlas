@@ -1,3 +1,4 @@
+import 'package:wurm_atlas/src/exceptions.dart';
 import 'package:wurm_atlas/src/tile.dart';
 import 'package:wurm_atlas/src/tile_info_repository.dart';
 import 'package:wurm_atlas/src/layer.dart';
@@ -20,10 +21,10 @@ abstract class BaseTileReader {
   static const _tileDataSize = 4;
 
   /// The header bytes of the map file
-  int get headerBytes => _headerBytes;
+  static int get headerBytes => _headerBytes;
 
   /// The tile data size in bytes of a tile
-  int get tileDataSize => _tileDataSize;
+  static int get tileDataSize => _tileDataSize;
 
   /// The size of the map
   int get size;
@@ -84,16 +85,30 @@ abstract class BaseTileReader {
     return _headerBytes + (x + y * size) * _tileDataSize;
   }
 
+  /// Get the tile x and y position from the [position] in the map data.
+  /// The position is the byte offset in the map data.
+  /// Returns a [Record] with the x and y position.
+  (int, int) tilePositionToXY(int position) {
+    final offset = position - _headerBytes;
+    if (offset < 0) {
+      throw OutOfBoundsException("Tile position out of data bounds",
+          position: position);
+    }
+    final x = offset ~/ _tileDataSize % size;
+    final y = offset ~/ _tileDataSize ~/ size;
+    return (x, y);
+  }
+
   /// Get the tile info ID from the [tileData].
   /// The tile info ID is the first byte of the tile data.
-  int tileInfoId(int tileData) {
+  static int tileInfoId(int tileData) {
     return (tileData >> 24) & 0xff;
   }
 
   /// Get the tile height from the [tileData].
   /// The tile height is the last two bytes of the tile data.
   /// The height is a signed 16-bit integer.
-  int tileHeight(int tileData) {
+  static int tileHeight(int tileData) {
     return (tileData & 0xffff).toSigned(16);
   }
 
